@@ -27,15 +27,14 @@ app.post('/api/storyboard', async (req, res) => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
       },
-      body: JSON.stringify({
-        model: 'gpt-4',
-        messages: [
-          { role: 'system', content: 'You are a drone operations planning assistant.' },
-          { role: 'user', content: prompt }
-        ],
-        temperature: 0.7
-      })
-    });
+     body: JSON.stringify({
+  model: 'gpt-3.5-turbo', // ✅ Switched model
+  messages: [
+    { role: 'system', content: 'You are a drone operations planning assistant.' },
+    { role: 'user', content: prompt }
+  ],
+  temperature: 0.7
+})
 
    const data = await response.json();
 console.log('OpenAI raw response:', JSON.stringify(data, null, 2));
