@@ -37,9 +37,12 @@ app.post('/api/storyboard', async (req, res) => {
       })
     });
 
-    const data = await response.json();
-    const message = data.choices?.[0]?.message?.content;
-    res.json({ storyboard: message });
+   const data = await response.json();
+console.log('OpenAI raw response:', JSON.stringify(data, null, 2));
+
+const message = data.choices?.[0]?.message?.content || "⚠️ GPT response failed or came back empty.";
+res.json({ storyboard: message });
+
   } catch (err) {
     console.error('Error generating storyboard:', err);
     res.status(500).json({ error: 'Failed to generate storyboard' });
