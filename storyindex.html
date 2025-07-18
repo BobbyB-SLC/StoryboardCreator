@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drone Mission Storyboard Agent</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background: #f4f4f4;
+    }
+    form {
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 600px;
+      margin-bottom: 2rem;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    .checkbox-group label {
+      font-weight: normal;
+    }
+    #storyboard-output {
+      white-space: pre-wrap;
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <h1>Drone Mission Storyboard Agent</h1>
+  <form id="storyboard-form">
+    <label for="location">Location</label>
+    <input type="text" id="location" required>
+
+    <label for="project-type">Project Type</label>
+    <select id="project-type">
+      <option value="Town/Community Showcase">Town/Community Showcase</option>
+      <option value="Real Estate">Real Estate</option>
+      <option value="Construction">Construction</option>
+      <option value="Event">Event</option>
+      <option value="Marketing/Promo">Marketing/Promo</option>
+      <option value="Film/Creative">Film/Creative</option>
+    </select>
+
+    <label>Output Type</label>
+    <div class="checkbox-group">
+      <label><input type="checkbox" name="output-type" value="Aerial Photo"> Aerial Photo</label>
+      <label><input type="checkbox" name="output-type" value="Aerial Video"> Aerial Video</label>
+      <label><input type="checkbox" name="output-type" value="Ground Photo"> Ground Photo</label>
+      <label><input type="checkbox" name="output-type" value="Ground Video"> Ground Video</label>
+      <label><input type="checkbox" name="output-type" value="Deliverables"> Deliverables</label>
+    </div>
+
+    <label for="tone-style">Tone/Style (optional)</label>
+    <select id="tone-style">
+      <option value="Cinematic">Cinematic</option>
+      <option value="Warm/Emotional">Warm/Emotional</option>
+      <option value="Corporate/Documentary">Corporate/Documentary</option>
+      <option value="High-energy/Youthful">High-energy/Youthful</option>
+    </select>
+
+    <button type="submit">Generate Storyboard</button>
+  </form>
+
+  <div id="storyboard-output">Your storyboard will appear here...</div>
+
+  <script>
+    const form = document.getElementById('storyboard-form');
+    const output = document.getElementById('storyboard-output');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const location = document.getElementById('location').value;
+      const projectType = document.getElementById('project-type').value;
+      const outputType = Array.from(document.querySelectorAll('input[name="output-type"]:checked')).map(el => el.value).join(', ');
+      const tone = document.getElementById('tone-style').value;
+
+      const prompt = `You are a professional drone mission planning assistant for a commercial drone operator. Based on the following inputs, generate a complete visual storyboard and shoot plan:\n\nLocation: ${location}\nProject Type: ${projectType}\nOutput Type: ${outputType}\nTone/Style: ${tone}\n\nYour output should include:\n- A structured storyboard flow (opening, subject, transition, closing)\n- Recommended shot types (aerial and ground, photo and video)\n- Key points of interest or locations to feature\n- Suggested narrative tone or storyline\n- Deliverable outline (photo quantity, video duration, delivery format)\n\nMake the output professional, detailed, and field-usable.`;
+
+      // Placeholder response
+      output.innerText = "Generating storyboard...\n\n" + prompt;
+    });
+  </script>
+</body>
+</html>
