@@ -1,5 +1,4 @@
 // server.js - Backend for Drone Mission Storyboard Agent
-
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
@@ -13,6 +12,9 @@ const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(bodyParser.json());
+
+// ✅ This is the correct spot:
+app.use(express.static('public'));
 
 app.post('/api/storyboard', async (req, res) => {
   const { location, projectType, outputType, toneStyle } = req.body;
