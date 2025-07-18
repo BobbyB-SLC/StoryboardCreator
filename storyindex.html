@@ -85,22 +85,46 @@
   <div id="storyboard-output">Your storyboard will appear here...</div>
 
   <script>
-    const form = document.getElementById('storyboard-form');
-    const output = document.getElementById('storyboard-output');
+  const form = document.getElementById('storyboard-form');
+  const output = document.getElementById('storyboard-output');
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-      const location = document.getElementById('location').value;
-      const projectType = document.getElementById('project-type').value;
-      const outputType = Array.from(document.querySelectorAll('input[name="output-type"]:checked')).map(el => el.value).join(', ');
-      const tone = document.getElementById('tone-style').value;
+    const location = document.getElementById('location').value;
+    const projectType = document.getElementById('project-type').value;
+    const outputType = Array.from(document.querySelectorAll('input[name="output-type"]:checked')).map(el => el.value).join(', ');
+    const tone = document.getElementById('tone-style').value;
 
-      const prompt = `You are a professional drone mission planning assistant for a commercial drone operator. Based on the following inputs, generate a complete visual storyboard and shoot plan:\n\nLocation: ${location}\nProject Type: ${projectType}\nOutput Type: ${outputType}\nTone/Style: ${tone}\n\nYour output should include:\n- A structured storyboard flow (opening, subject, transition, closing)\n- Recommended shot types (aerial and ground, photo and video)\n- Key points of interest or locations to feature\n- Suggested narrative tone or storyline\n- Deliverable outline (photo quantity, video duration, delivery format)\n\nMake the output professional, detailed, and field-usable.`;
+    output.innerText = "Generating storyboard… please wait.";
 
-      // Placeholder response
-      output.innerText = "Generating storyboard...\n\n" + prompt;
-    });
-  </script>
+    try {
+      const response = await fetch('/api/storyboard', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          location,
+          projectType,
+          outputType,
+          toneStyle: tone
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.storyboard) {
+        output.innerText = data.storyboard;
+      } else {
+        output.innerText = "Error: No storyboard returned.";
+      }
+    } catch (err) {
+      output.innerText = "Failed to generate storyboard. Please try again.";
+      console.error(err);
+    }
+  });
+</script>
+
 </body>
 </html>
