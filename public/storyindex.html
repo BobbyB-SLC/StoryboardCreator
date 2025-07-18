@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Drone Mission Storyboard Agent</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Drone Mission Storyboard Prompt Generator</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -44,13 +44,20 @@
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
+    .copied {
+      background-color: #d4edda;
+      color: #155724;
+      padding: 1rem;
+      border-radius: 5px;
+      margin-bottom: 1rem;
+    }
   </style>
 </head>
 <body>
-  <h1>Drone Mission Storyboard Agent</h1>
+  <h1>Drone Mission Storyboard Prompt Generator</h1>
   <form id="storyboard-form">
     <label for="location">Location</label>
-    <input type="text" id="location" required>
+    <input type="text" id="location" required />
 
     <label for="project-type">Project Type</label>
     <select id="project-type">
@@ -64,11 +71,11 @@
 
     <label>Output Type</label>
     <div class="checkbox-group">
-      <label><input type="checkbox" name="output-type" value="Aerial Photo"> Aerial Photo</label>
-      <label><input type="checkbox" name="output-type" value="Aerial Video"> Aerial Video</label>
-      <label><input type="checkbox" name="output-type" value="Ground Photo"> Ground Photo</label>
-      <label><input type="checkbox" name="output-type" value="Ground Video"> Ground Video</label>
-      <label><input type="checkbox" name="output-type" value="Deliverables"> Deliverables</label>
+      <label><input type="checkbox" name="output-type" value="Aerial Photo" /> Aerial Photo</label>
+      <label><input type="checkbox" name="output-type" value="Aerial Video" /> Aerial Video</label>
+      <label><input type="checkbox" name="output-type" value="Ground Photo" /> Ground Photo</label>
+      <label><input type="checkbox" name="output-type" value="Ground Video" /> Ground Video</label>
+      <label><input type="checkbox" name="output-type" value="Deliverables" /> Deliverables</label>
     </div>
 
     <label for="tone-style">Tone/Style (optional)</label>
@@ -79,52 +86,55 @@
       <option value="High-energy/Youthful">High-energy/Youthful</option>
     </select>
 
-    <button type="submit">Generate Storyboard</button>
+    <button type="submit">Generate Storyboard Prompt</button>
   </form>
 
-  <div id="storyboard-output">Your storyboard will appear here...</div>
+  <div id="copy-status" class="copied" style="display:none;">✅ Prompt copied to clipboard! Paste it into ChatGPT.</div>
+  <div id="storyboard-output">Your generated GPT prompt will appear here...</div>
 
   <script>
-  const form = document.getElementById('storyboard-form');
-  const output = document.getElementById('storyboard-output');
+    const form = document.getElementById('storyboard-form');
+    const output = document.getElementById('storyboard-output');
+    const status = document.getElementById('copy-status');
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
 
-    const location = document.getElementById('location').value;
-    const projectType = document.getElementById('project-type').value;
-    const outputType = Array.from(document.querySelectorAll('input[name="output-type"]:checked')).map(el => el.value).join(', ');
-    const tone = document.getElementById('tone-style').value;
+      const location = document.getElementById('location').value;
+      const projectType = document.getElementById('project-type').value;
+      const outputType = Array.from(document.querySelectorAll('input[name="output-type"]:checked'))
+                              .map(el => el.value)
+                              .join(', ');
+      const toneStyle = document.getElementById('tone-style').value;
 
-    output.innerText = "Generating storyboard… please wait.";
+      const prompt = `You are a professional drone mission planning assistant for a commercial drone operator. Based on the following inputs, generate a complete visual storyboard and shoot plan.
 
-    try {
-      const response = await fetch('/api/storyboard', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          location,
-          projectType,
-          outputType,
-          toneStyle: tone
+Location: ${location}
+Project Type: ${projectType}
+Output Type: ${outputType}
+Tone/Style: ${toneStyle}
+
+Your output should include:
+- A structured storyboard flow (opening, subject, transition, closing)
+- Recommended shot types (aerial and ground, photo and video)
+- Key points of interest or locations to feature
+- Suggested narrative tone or storyline
+- Deliverable outline (photo quantity, video duration, delivery format)
+
+Make the output professional, detailed, and field-usable.`;
+
+      output.innerText = prompt;
+
+      // Auto-copy to clipboard
+      navigator.clipboard.writeText(prompt)
+        .then(() => {
+          status.style.display = 'block';
         })
-      });
-
-      const data = await response.json();
-
-      if (data.storyboard) {
-        output.innerText = data.storyboard;
-      } else {
-        output.innerText = "Error: No storyboard returned.";
-      }
-    } catch (err) {
-      output.innerText = "Failed to generate storyboard. Please try again.";
-      console.error(err);
-    }
-  });
-</script>
-
+        .catch(err => {
+          status.innerText = '⚠️ Failed to copy to clipboard.';
+          status.style.display = 'block';
+        });
+    });
+  </script>
 </body>
 </html>
