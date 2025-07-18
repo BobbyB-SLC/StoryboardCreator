@@ -10,13 +10,11 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.static('public')); // ✅ Serve static files from /public
 
-// ✅ This is the correct spot:
-app.use(express.static('public'));
-
+// Handle POST requests for storyboards
 app.post('/api/storyboard', async (req, res) => {
   const { location, projectType, outputType, toneStyle } = req.body;
 
@@ -48,4 +46,10 @@ app.post('/api/storyboard', async (req, res) => {
   }
 });
 
+// ✅ Serve storyindex.html at root path
+app.get('/', (req, res) => {
+  res.sendFile('storyindex.html', { root: 'public' });
+});
+
+// Start the server
 app.listen(PORT, () => console.log(`Storyboard server running on port ${PORT}`));
